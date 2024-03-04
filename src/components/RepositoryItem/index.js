@@ -21,11 +21,29 @@ const RepositoryItem = props => {
 
   return (
     <li className="liRepoContent">
+      <img src={avatarUrl} alt={name} />
       <p>{name}</p>
-      <p>{issuesCount}</p>
-      <p>{forksCount}</p>
-      <p>{starsCount}</p>
-      <p>{avatarUrl}</p>
+      <div className="contentBg">
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/stars-count-img.png"
+          alt="stars"
+        />
+        <p>{starsCount} stars</p>
+      </div>
+      <div className="contentBg">
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/forks-count-img.png"
+          alt="forks"
+        />
+        <p>{forksCount} forks</p>
+      </div>
+      <div className="contentBg">
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/issues-count-img.png"
+          alt="open issues"
+        />
+        <p>{issuesCount} open issues</p>
+      </div>
     </li>
   )
 }
