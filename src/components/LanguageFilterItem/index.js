@@ -3,9 +3,16 @@
 import './index.css'
 
 const LanguageFilterItem = props => {
-  const {eachObject} = props
-  const {language} = eachObject
-  return <li className="liLanguage">{language}</li>
+  const {eachObject, languageTabClickedFunction} = props
+  const {language, id} = eachObject
+
+  const languageTabClicked = () => languageTabClickedFunction(id)
+
+  return (
+    <li className="liLanguage" onClick={languageTabClicked}>
+      {language}
+    </li>
+  )
 }
 
 export default LanguageFilterItem

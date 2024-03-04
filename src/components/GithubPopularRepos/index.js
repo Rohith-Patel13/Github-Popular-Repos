@@ -16,13 +16,14 @@ const languageFiltersData = [
 
 const GithubPopularRepos = () => {
   const [repoItem, setRepoItem] = useState([])
+  const [languageTab, setLanguageTab] = useState('ALL')
 
   console.log('repoItem', repoItem)
 
   useEffect(() => {
     const fetchDataRepositories = async () => {
       const fetchDataRepos = await axios.get(
-        'https://apis.ccbp.in/popular-repos?language=ALL',
+        `https://apis.ccbp.in/popular-repos?language=${languageTab}`,
       )
       console.log('fetchDataRepos', fetchDataRepos)
       const dataArrayRepos = fetchDataRepos.data
@@ -33,14 +34,26 @@ const GithubPopularRepos = () => {
     }
 
     fetchDataRepositories()
-  }, [])
+  }, [languageTab])
+
+  const languageTabClickedFunction = idNum => {
+    const tabActive = languageFiltersData.filter(
+      eachObject => eachObject.id === idNum,
+    )
+    console.log(tabActive)
+    setLanguageTab(tabActive[0].language)
+  }
 
   return (
     <div className="bg">
       <h1 className="mainHead">Popular</h1>
       <ul className="ulLanguageFilterItem">
         {languageFiltersData.map(eachObject => (
-          <LanguageFilterItem eachObject={eachObject} key={eachObject.id} />
+          <LanguageFilterItem
+            eachObject={eachObject}
+            languageTabClickedFunction={languageTabClickedFunction}
+            key={eachObject.id}
+          />
         ))}
       </ul>
       <ul className="ulRepositoryItem">

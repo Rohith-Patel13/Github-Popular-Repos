@@ -20,7 +20,7 @@ const RepositoryItem = props => {
   } = eachObjectDetailsInCamelCase
 
   return (
-    <li>
+    <li className="liRepoContent">
       <p>{name}</p>
       <p>{issuesCount}</p>
       <p>{forksCount}</p>
