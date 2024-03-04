@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {Component} from 'react'
 import axios from 'axios'
 import Loader from 'react-loader-spinner'
 import RepositoryItem from '../RepositoryItem/index'
@@ -13,100 +13,91 @@ const languageFiltersData = [
   {id: 'CSS', language: 'CSS'},
 ]
 
-// Write your code here
+class GithubPopularRepos extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      repoItem: [],
+      languageTab: languageFiltersData[0].id,
+      resultStatusView: 'LOADING',
+    }
+  }
 
-const resultStatus = {
-  loading: 'LOADING',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-}
-console.log(resultStatus)
+  componentDidMount() {
+    this.fetchDataRepositories()
+  }
 
-const GithubPopularRepos = () => {
-  const [repoItem, setRepoItem] = useState([])
-  const [languageTab, setLanguageTab] = useState(languageFiltersData[0].id)
-  const [resultStatusView, setResultStatusView] = useState(resultStatus.loading)
-
-  console.log('repoItem', repoItem)
-
-  useEffect(() => {
-    const fetchDataRepositories = async () => {
-      try {
-        const fetchDataRepos = await axios.get(
-          `https://apis.ccbp.in/popular-repos?language=${languageTab}`,
-        )
-        console.log('fetchDataRepos', fetchDataRepos)
-        const dataArrayRepos = fetchDataRepos.data
-        console.log('dataArrayRepos', dataArrayRepos)
-        const responseStatus = fetchDataRepos.status
-        console.log('responseStatus', responseStatus)
-        if (responseStatus === 200) {
-          const popularRepos = dataArrayRepos.popular_repos
-          console.log('popularRepos', popularRepos)
-          setRepoItem(popularRepos)
-          setResultStatusView(resultStatus.success)
-        } else {
-          setResultStatusView(resultStatus.failure)
-        }
-      } catch (error) {
-        console.log(error.message)
+  fetchDataRepositories = async () => {
+    try {
+      const {languageTab} = this.state
+      const response = await axios.get(
+        `https://apis.ccbp.in/popular-repos?language=${languageTab}`,
+      )
+      if (response.status === 200) {
+        this.setState({
+          repoItem: response.data.popular_repos,
+          resultStatusView: 'SUCCESS',
+        })
+      } else {
+        this.setState({resultStatusView: 'FAILURE'})
       }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  languageTabClickedFunction = id => {
+    this.setState({resultStatusView: 'LOADING', languageTab: id}, () =>
+      this.fetchDataRepositories(),
+    )
+  }
+
+  render() {
+    const {resultStatusView, repoItem} = this.state
+
+    let renderComponent
+    switch (resultStatusView) {
+      case 'SUCCESS':
+        renderComponent = repoItem.map(eachObject => (
+          <RepositoryItem eachObject={eachObject} key={eachObject.id} />
+        ))
+        break
+      case 'FAILURE':
+        renderComponent = (
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/api-failure-view.png"
+            alt="failure view"
+          />
+        )
+        break
+      case 'LOADING':
+        renderComponent = (
+          <div data-testid="loader">
+            <Loader type="ThreeDots" color="#0284c7" height={80} width={80} />
+          </div>
+        )
+        break
+      default:
+        renderComponent = null
+        break
     }
 
-    fetchDataRepositories()
-  }, [languageTab])
-
-  const languageTabClickedFunction = id => {
-    setResultStatusView(resultStatus.loading)
-    setLanguageTab(id)
+    return (
+      <div className="bg">
+        <h1 className="mainHead">Popular</h1>
+        <ul className="ulLanguageFilterItem">
+          {languageFiltersData.map(eachObject => (
+            <LanguageFilterItem
+              eachObject={eachObject}
+              languageTabClickedFunction={this.languageTabClickedFunction}
+              key={eachObject.id}
+            />
+          ))}
+        </ul>
+        <ul className="ulRepositoryItem">{renderComponent}</ul>
+      </div>
+    )
   }
-
-  console.log('resultStatusView', resultStatusView)
-
-  let renderComponent
-  switch (resultStatusView) {
-    case resultStatus.success:
-      renderComponent = repoItem.map(eachObject => (
-        <RepositoryItem eachObject={eachObject} key={eachObject.id} />
-      ))
-      break
-    case resultStatus.failure:
-      renderComponent = (
-        <img
-          src="https://assets.ccbp.in/frontend/react-js/api-failure-view.png"
-          alt="failure view"
-        />
-      )
-      break
-
-    case resultStatus.loading:
-      renderComponent = (
-        <div data-testid="loader">
-          <Loader type="ThreeDots" color="#0284c7" height={80} width={80} />
-        </div>
-      )
-      break
-
-    default:
-      renderComponent = null
-      break
-  }
-
-  return (
-    <div className="bg">
-      <h1 className="mainHead">Popular</h1>
-      <ul className="ulLanguageFilterItem">
-        {languageFiltersData.map(eachObject => (
-          <LanguageFilterItem
-            eachObject={eachObject}
-            languageTabClickedFunction={languageTabClickedFunction}
-            key={eachObject.id}
-          />
-        ))}
-      </ul>
-      <ul className="ulRepositoryItem">{renderComponent}</ul>
-    </div>
-  )
 }
 
 export default GithubPopularRepos
