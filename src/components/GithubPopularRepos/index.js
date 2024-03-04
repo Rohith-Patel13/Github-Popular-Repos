@@ -45,7 +45,7 @@ const GithubPopularRepos = () => {
           console.log('popularRepos', popularRepos)
           setRepoItem(popularRepos)
           setResultStatusView(resultStatus.success)
-        } else if (responseStatus === 401) {
+        } else {
           setResultStatusView(resultStatus.failure)
         }
       } catch (error) {
@@ -56,13 +56,9 @@ const GithubPopularRepos = () => {
     fetchDataRepositories()
   }, [languageTab])
 
-  const languageTabClickedFunction = idNum => {
-    const tabActive = languageFiltersData.filter(
-      eachObject => eachObject.id === idNum,
-    )
-    console.log(tabActive)
-    setLanguageTab(tabActive[0].id)
+  const languageTabClickedFunction = id => {
     setResultStatusView(resultStatus.loading)
+    setLanguageTab(id)
   }
 
   console.log('resultStatusView', resultStatusView)
