@@ -9,8 +9,14 @@ const LanguageFilterItem = props => {
   const languageTabClicked = () => languageTabClickedFunction(id)
 
   return (
-    <li className="liLanguage" onClick={languageTabClicked}>
-      {language}
+    <li className="liLanguage">
+      <button
+        type="button"
+        className="languagefilerBtn"
+        onClick={languageTabClicked}
+      >
+        {language}
+      </button>
     </li>
   )
 }

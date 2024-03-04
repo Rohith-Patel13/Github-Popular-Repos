@@ -24,9 +24,7 @@ console.log(resultStatus)
 
 const GithubPopularRepos = () => {
   const [repoItem, setRepoItem] = useState([])
-  const [languageTab, setLanguageTab] = useState(
-    languageFiltersData[0].language,
-  )
+  const [languageTab, setLanguageTab] = useState(languageFiltersData[0].id)
   const [resultStatusView, setResultStatusView] = useState(resultStatus.loading)
 
   console.log('repoItem', repoItem)
@@ -63,7 +61,7 @@ const GithubPopularRepos = () => {
       eachObject => eachObject.id === idNum,
     )
     console.log(tabActive)
-    setLanguageTab(tabActive[0].language)
+    setLanguageTab(tabActive[0].id)
     setResultStatusView(resultStatus.loading)
   }
 
