@@ -24,7 +24,9 @@ console.log(resultStatus)
 
 const GithubPopularRepos = () => {
   const [repoItem, setRepoItem] = useState([])
-  const [languageTab, setLanguageTab] = useState('ALL')
+  const [languageTab, setLanguageTab] = useState(
+    languageFiltersData[0].language,
+  )
   const [resultStatusView, setResultStatusView] = useState(resultStatus.loading)
 
   console.log('repoItem', repoItem)
@@ -62,6 +64,7 @@ const GithubPopularRepos = () => {
     )
     console.log(tabActive)
     setLanguageTab(tabActive[0].language)
+    setResultStatusView(resultStatus.loading)
   }
 
   console.log('resultStatusView', resultStatusView)
@@ -81,12 +84,18 @@ const GithubPopularRepos = () => {
         />
       )
       break
-    default:
+
+    case resultStatus.loading:
       renderComponent = (
         <div data-testid="loader">
           <Loader type="ThreeDots" color="#0284c7" height={80} width={80} />
         </div>
       )
+      break
+
+    default:
+      renderComponent = null
+      break
   }
 
   return (
